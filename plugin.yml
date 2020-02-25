@@ -1,0 +1,14 @@
+name: Podman Login
+description: Log in to registries in your build steps using Podman
+author: https://github.com/kennasecurity
+requirements:
+  - bash
+  - podman
+configuration:
+  properties:
+    username:
+      type: string
+    server:
+      type: string
+    required:
+      - username

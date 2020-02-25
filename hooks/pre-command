@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -eu -o pipefail
+
+function plugin_var_prefixes() {
+  while IFS='=' read -r name _ ; do
+    if [[ $name =~ ^(BUILDKITE_PLUGIN_PODMAN_LOGIN_[0-9]+) || $name =~ ^(BUILDKITE_PLUGIN_PODMAN_LOGIN)_[^0-9] ]] ; then
+      echo "${BASH_REMATCH[1]}"
+    fi
+  done < <(env) | sort | uniq
+}
+
+# enumerate the list of servers to login
+plugin_var_prefixes | while IFS='=' read -r prefix _ ; do
+  username_var="${prefix}_USERNAME"
+  password_env_var="${prefix}_PASSWORD_ENV"
+  password_var="${!password_env_var:-PODMAN_LOGIN_PASSWORD}"
+  server_var="${prefix}_SERVER"
+
+  if [[ -z "${!password_var:-}" ]] ; then
+    echo "+++ 🚨 No podman-login password found in \$${password_var}"
+    exit 1
+  fi
+
+  login_args=(
+    "--username" "${!username_var:-}"
+    "--password-stdin"
+    "${!server_var:-}"
+  )
+
+  echo "~~~ :podman: Logging in to registry ${!server_var:-}"
+  podman login "${login_args[@]}" <<< "${!password_var:-}"
+done
