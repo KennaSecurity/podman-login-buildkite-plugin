@@ -1,0 +1,5 @@
+steps:
+  - label: ":shell: Tests"
+    plugins:
+      kennasecurity/podman-compose:
+        run: tests
