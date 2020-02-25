@@ -25,9 +25,12 @@ plugin_var_prefixes | while IFS='=' read -r prefix _ ; do
   login_args=(
     "--username" "${!username_var:-}"
     "--password-stdin"
-    "${!server_var:-}"
   )
 
-  echo "~~~ :podman: Logging in to registry ${!server_var:-}"
+if [[ -n "${!server_var:-}" ]] ; then
+    login_args+=("${!server_var:-}")
+  fi
+
+  echo "~~~ :podman: Logging in to registry ${!server_var:-quay.io}"
   podman login "${login_args[@]}" <<< "${!password_var:-}"
 done
