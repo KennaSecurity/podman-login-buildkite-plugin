@@ -1,4 +1,4 @@
-# Docker Login Buildkite Plugin
+# Podman Login Buildkite Plugin
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) to log in to specific registries using Podman.
 
@@ -8,7 +8,7 @@ To avoid leaking your credentials to Buildkite or anyone with access to your bui
 
 The examples below show how to provide passwords for single and multiple registries.
 
-## Example: Log in to Quay.io (or a single server)
+## Example: Log in to a single server (or Quay, by default)
 
 ```bash
 # Environment or pre-command hook
@@ -29,7 +29,7 @@ steps:
 
 ```bash
 # environment or pre-command hook
-export PODMAN_LOGIN_MY_PRIVATE_REGISTRY=mysecurepassword1
+export PODMAN_LOGIN_MY_COOL_REGISTRY=mysecurepassword1
 export PODMAN_LOGIN_ANOTHER_REGISTRY=mysecurepassword2
 ```
 
@@ -40,7 +40,7 @@ steps:
       - kennasecurity/podman-login:
           server: my.cool.registry
           username: my-username
-          password-env: PODMAN_LOGIN_MY_PRIVATE_REGISTRY
+          password-env: PODMAN_LOGIN_MY_COOL_REGISTRY
       - kennasecurity/podman-login:
           server: another.cool.registry
           username: my-other-usename
@@ -55,10 +55,10 @@ The username to send to the registry.
 
 ### `server` (optional)
 
-The server to log in to, if blank or ommitted logs into Quay.
+The server to log in to (logs into Quay, if blank or ommitted).
 
-### `password-env`
+### `password-env` (optional)
 
-The environment variable that the password is stored in
+The environment variable that the password is stored in.
 
 Defaults to `PODMAN_LOGIN_PASSWORD`.
