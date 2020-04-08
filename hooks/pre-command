@@ -10,6 +10,10 @@ function plugin_var_prefixes() {
   done < <(env) | sort | uniq
 }
 
+if [[ -z "${BUILDKITE_PLUGIN_PODMAN_LOGIN_USERNAME:-}" ]]; then
+  BUILDKITE_PLUGIN_PODMAN_LOGIN_USERNAME="\$app"
+fi
+
 # enumerate the list of servers to login
 plugin_var_prefixes | while IFS='=' read -r prefix _ ; do
   username_var="${prefix}_USERNAME"
